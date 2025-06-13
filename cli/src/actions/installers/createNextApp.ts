@@ -1,13 +1,17 @@
-import { execSync } from 'child_process'
 import chalk from 'chalk'
 
-export function createNextApp(projectName: string) {
-  console.log(chalk.cyanBright('\n📦 Creating base project with Next.js...\n'))
+import type { PackageManager } from '@/prompts'
+import { runCommand } from '@/utils/exec'
 
+export function createNextApp(
+  projectName: string,
+  packageManager: PackageManager,
+) {
   try {
-    execSync(
-      `pnpm create next-app ${projectName} -- --typescript --app --tailwind --eslint --no-src-dir`,
-      { stdio: ['inherit', 'inherit', 'ignore'] },
+    runCommand(
+      `create next-app ${projectName} -- --typescript --app --tailwind --eslint --no-src-dir`,
+      process.cwd(),
+      packageManager,
     )
   } catch (error) {
     console.error(chalk.red('❌ Failed to create Next.js project.'))

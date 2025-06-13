@@ -1,13 +1,14 @@
-import { execSync } from 'child_process'
 import chalk from 'chalk'
 
-export function installShadcn(projectPath: string) {
-  console.log(chalk.gray('🎨 Installing ShadCN UI...'))
+import type { PackageManager } from '@/prompts'
+import { runCommand } from '@/utils/exec'
 
+export function installShadcn(
+  projectPath: string,
+  packageManager: PackageManager,
+) {
   try {
-    execSync(`cd ${projectPath} && npx shadcn@latest init -y`, {
-      stdio: ['inherit', 'inherit', 'ignore'],
-    })
+    runCommand('shadcn@latest init -y', projectPath, packageManager)
   } catch (error) {
     console.error(chalk.red('❌ Failed to install ShadCN UI.'))
     process.exit(1)

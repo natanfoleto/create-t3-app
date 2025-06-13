@@ -1,9 +1,17 @@
-import path from 'path'
 import chalk from 'chalk'
-import { askProjectName, askUseShadcn } from './prompts.js'
-import { checkAndPrepareFolder } from './actions/utils/checkFolder.js'
-import { createNextApp } from './actions/installers/createNextApp.js'
-import { installShadcn } from './actions/installers/installShadcn.js'
+import path from 'path'
+
+import { createNextApp } from '@/actions/installers/createNextApp.js'
+import { installPrisma } from '@/actions/installers/installPrisma.js'
+import { installShadcn } from '@/actions/installers/installShadcn'
+import { checkAndPrepareFolder } from '@/actions/utils/checkFolder.js'
+import {
+  askDatabaseProvider,
+  askPackageManager,
+  askProjectName,
+  askUsePrisma,
+  askUseShadcn,
+} from '@/prompts.js'
 
 async function main() {
   console.log(chalk.cyanBright('\n🚀 Starting project with create-t3-app\n'))
@@ -14,17 +22,26 @@ async function main() {
 
   await checkAndPrepareFolder(targetDir, projectName)
 
-  createNextApp(projectName)
+  const packageManager = await askPackageManager()
+
+  createNextApp(projectName, packageManager)
 
   const useShadcn = await askUseShadcn()
 
   if (useShadcn) {
-    installShadcn(targetDir)
+    installShadcn(targetDir, packageManager)
+  }
+
+  const usePrisma = await askUsePrisma()
+
+  if (usePrisma) {
+    const provider = await askDatabaseProvider()
+    await installPrisma(targetDir, provider, packageManager)
   }
 
   console.log(chalk.greenBright('\n✅ Project successfully created!'))
   console.log(`\n👉 cd ${projectName}`)
-  console.log(`👉 pnpm dev\n`)
+  console.log(`👉 ${packageManager} dev`)
 }
 
 main().catch((err) => {

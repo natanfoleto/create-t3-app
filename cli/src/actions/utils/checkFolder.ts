@@ -1,6 +1,6 @@
+import chalk from 'chalk'
 import fs from 'fs-extra'
 import inquirer from 'inquirer'
-import chalk from 'chalk'
 
 export async function checkAndPrepareFolder(
   targetDir: string,
